@@ -1,9 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Player/Arm.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Core/GameSoundManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/Core/TouchInput.cs" Line="4" Column="15" />
-      <File FileName="Assets/Scripts/Player/Arm.cs" Line="34" Column="78" />
+      <File FileName="Assets/Scripts/Core/EventManager.cs" Line="25" Column="26" />
+      <File FileName="Assets/Scripts/Player/AiChan.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Core/TouchInput.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Enemy/EnemyBase.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Camera/FollowCamera.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Player/ArmAnimation.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Core/GameSoundManager.cs" Line="36" Column="20" />
+      <File FileName="Assets/Scripts/Player/Arm.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Core/Title.cs" Line="8" Column="50" />
+      <File FileName="Assets/Scripts/Core/Reset.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Core/FrameRate.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
