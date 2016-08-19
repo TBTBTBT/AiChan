@@ -14,6 +14,8 @@ public class AiChan : CanPause {
 	bool isLand=false;
 	bool isJump=false;
 	bool isDamage=false;
+	bool isMistake =false;
+	bool isCleard = false;
 	int  damageTime = 0;
 	int  grabTime = 0;
 	// Use this for initialization
@@ -72,47 +74,71 @@ public class AiChan : CanPause {
 	override protected void NoPause() {
 	}
 	override protected void NoPauseFixed() {
-		if (isDamage == true) {
-			if(damageTime == 0){
-				rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
+		if (isMistake == false) {
+			if (isDamage == true) {
+				if (damageTime == 0) {
+					rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
+				}
+				if (isLand == true) {
+					rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
+				}
+				MoveLeft ();
+				damageTime ++;
+				if (damageTime > 40) {
+					isDamage = false;
+					damageTime = 0;
+					jumpLeft = 0;
+				}
 			}
-			if(isLand == true){
-				rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
-			}
-			MoveLeft();
-			damageTime ++;
-			if(damageTime > 40){
-				isDamage = false;
-				damageTime = 0;
-				jumpLeft = 0;
+			if (arm.IsGrab () == false) {
+
+				if (isDamage == false)
+					MoveRight ();
+				if (isLand == false) {
+					isJump = true;
+					if (isDamage == false){
+						Jump ();
+					}
+					Grav ();
+				} else {
+					jumpLeft = 1;
+				}
+				isLand = false;
+				grabTime = 0;
+			} else {
+				if (isDamage == false)
+					jumpLeft = 1;
+				Stop ();
+				MoveToArm ();
 			}
 		}
-		if (arm.IsGrab () == false) {
-
-			if(isDamage == false)MoveRight ();
-			if (isLand == false) {
-				isJump = true;
-				if(isDamage == false)Jump ();
-				Grav ();
-			} else{
-				jumpLeft = 1;
-			}
-			isLand = false;
-			grabTime = 0;
-		} else {
-			if(isDamage == false)jumpLeft = 1;
-			Stop ();
-			MoveToArm();
+		if(hp <= 0 || isMistake == true ){
+			Miss ();
+			Grav ();
 		}
-
 		ModifyVelocity ();
 
 
 	}
+	void Miss(){
+		if (isMistake == false) {
+			isMistake = true;
+			transform.GetComponent<Collider2D> ().enabled = false;
+			rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
+		}
+	}
 	void OnCollisionStay2D(Collision2D c){
 		if (c.transform.tag == "Land") {
-			isLand = true;
-			isJump = false;
+			//for (int aIndex = 0; aIndex < c.contacts.Length; ++ aIndex) {
+			//	Debug.Log(c.contacts[aIndex].normal);
+			//}
+			if(c.contacts.Length>0){
+				if(c.contacts[0].normal == new Vector2(0,1)){
+					isLand = true;
+					isJump = false;
+				}
+			}
+
 		} 
 
 	}

@@ -35,7 +35,7 @@ public class Arm : CanPause {
 
 
 	void Start () {
-		EventManager.OnTouchBegin.AddListener (StartPunching);
+		EventManager.OnTouchMove.AddListener (StartPunching);
 		///EventManager.OnTouchBegin.AddListener (StartPunching)
 		EventManager.OnTouchEnd.AddListener (EndPunching);
 		col = transform.GetComponent<Collider2D> ();
