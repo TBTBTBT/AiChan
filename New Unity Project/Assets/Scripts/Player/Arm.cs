@@ -41,15 +41,17 @@ public class Arm : CanPause {
 		col = transform.GetComponent<Collider2D> ();
 	}
 	void StartPunching(){
-				if (isPunching == false) {
-			EventManager.Invoke(ref EventManager.OnPunchBegin );
-			isPunching = true;
-			punchPos = 0;
-			SetAngle();
-			transform.localPosition = new Vector3(0,0,0);
-			isGrab = false;
-			punchStatus = 1;
+		if (player.IsMistake () == false) {
+			if (isPunching == false) {
+				EventManager.Invoke (ref EventManager.OnPunchBegin);
+				isPunching = true;
+				punchPos = 0;
+				SetAngle ();
+				transform.localPosition = new Vector3 (0, 0, 0);
+				isGrab = false;
+				punchStatus = 1;
 
+			}
 		}
 	}
 	void SetAngle(){
@@ -58,6 +60,7 @@ public class Arm : CanPause {
 		//transform.parent.rotation = transform.parent.rotation.SetLookRotation (transform.position - TouchInput.GetTouchWorldPosition(cam),new Vector3(0,0,1));
 	}
 	void Punching(){
+		if(player.IsMistake() == true)isGrab = false;
 		if (isPunching == true) {
 			if(col.enabled == false)col.enabled = true;
 			if(isGrab == false){

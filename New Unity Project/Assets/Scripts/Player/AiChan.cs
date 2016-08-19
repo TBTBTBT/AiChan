@@ -9,7 +9,7 @@ public class AiChan : CanPause {
 	public float spd = 2;
 	public float jump = 5;
 	public float grav = 0.2f;
-	public int hp = 3;  
+	public int hp = 5;  
 	int jumpLeft = 0;
 	bool isLand=false;
 	bool isJump=false;
@@ -112,7 +112,7 @@ public class AiChan : CanPause {
 				MoveToArm ();
 			}
 		}
-		if(hp <= 0 || isMistake == true ){
+		if(hp <= 0 ||transform.position.y<-2|| isMistake == true ){
 			Miss ();
 			Grav ();
 		}
@@ -123,9 +123,12 @@ public class AiChan : CanPause {
 	void Miss(){
 		if (isMistake == false) {
 			isMistake = true;
-			transform.GetComponent<Collider2D> ().enabled = false;
-			rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
+			//transform.GetComponent<Collider2D> ().enabled = false;
+			rg.velocity = new Vector2 (0, 2.4f);
 		}
+	}
+	void Damage(){
+		if(hp>0)hp --;
 	}
 	void OnCollisionStay2D(Collision2D c){
 		if (c.transform.tag == "Land") {
@@ -144,7 +147,10 @@ public class AiChan : CanPause {
 	}
 	void OnTriggerStay2D(Collider2D c){
 		if (c.transform.tag == "Enemy") {
-			if(isDamage == false)EventManager.Invoke(ref EventManager.OnDamaged);
+			if(isDamage == false){
+				EventManager.Invoke(ref EventManager.OnDamaged);
+				Damage();
+			}
 			isDamage = true;
 
 		}
@@ -154,5 +160,8 @@ public class AiChan : CanPause {
 	}
 	public bool IsDamaged(){
 		return isDamage;
+	}
+	public bool IsMistake(){
+		return isMistake;
 	}
 }

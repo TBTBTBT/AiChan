@@ -6,6 +6,7 @@ public class PlayerAnimation : CanPause {
 	[SerializeField] List<Sprite> walkImage;
 	[SerializeField] List<Sprite> jumpImage;
 	[SerializeField] List<Sprite> damageImage;
+	[SerializeField] List<Sprite> mistakeImage;
 	float[] walkTransform = {0.01f,0,0.01f,0};
 	int time = 0;
 	int num = 0;
@@ -26,14 +27,17 @@ public class PlayerAnimation : CanPause {
 			case 0:Walk ();break;
 			case 1:Jump ();break;
 			case 2:Damage();break;
+			case 3:Mistake();break;
 			}
 
 
 
 	}
 	void AiStatus(){
-
-		if (ai.IsDamaged () == true) {
+		if (ai.IsMistake () == true) {
+			ChangeMotion(3);
+		}
+		else if (ai.IsDamaged () == true) {
 			ChangeMotion(2);
 		}
 		else if (ai.IsJump () == true) {
@@ -93,6 +97,22 @@ public class PlayerAnimation : CanPause {
 			}
 			if (damageImage.Count > num) {
 				r.sprite = damageImage [num];
+				SetHeight (0);
+			}
+		}
+
+	}
+	void Mistake(){
+		if (time > 8) {
+			time = 0;
+			num++;
+		}
+		if (time == 0) {
+			if (mistakeImage.Count <= num) {
+				num = 0;
+			}
+			if (mistakeImage.Count > num) {
+				r.sprite = mistakeImage [num];
 				SetHeight (0);
 			}
 		}
