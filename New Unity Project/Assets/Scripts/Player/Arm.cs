@@ -7,8 +7,10 @@ public class Arm : CanPause {
 	private bool isGrab = false;
 	private bool playerEndAim = false;
 	private int punchTimeMax = 18;
+	private float armSize = 1f;
 	private Vector3 grabPos;
-	private Collider2D col;
+	private Vector3 TouchPos;
+	private BoxCollider2D col;
 	[SerializeField]private Camera cam;
 	[SerializeField]private AiChan player;
 	//
@@ -35,29 +37,48 @@ public class Arm : CanPause {
 
 
 	void Start () {
+		EventManager.OnTouchBegin.AddListener (SetTouchPos);
 		EventManager.OnTouchMove.AddListener (StartPunching);
-		///EventManager.OnTouchBegin.AddListener (StartPunching)
 		EventManager.OnTouchEnd.AddListener (EndPunching);
-		col = transform.GetComponent<Collider2D> ();
+		EventManager.OnGetProtein.AddListener (UpArmSize);
+		col = transform.GetComponent<BoxCollider2D> ();
+	}
+	void SetTouchPos(){
+		TouchPos = TouchInput.GetTouchPosition ();
+		Debug.Log ("a");
 	}
 	void StartPunching(){
 		if (player.IsMistake () == false) {
-			if (isPunching == false) {
+			if (isPunching == false && (TouchPos - TouchInput.GetTouchPosition()).magnitude > 100f) {
 				EventManager.Invoke (ref EventManager.OnPunchBegin);
 				isPunching = true;
 				punchPos = 0;
-				SetAngle ();
+				SetAngle (TouchPos,TouchInput.GetTouchPosition());
 				transform.localPosition = new Vector3 (0, 0, 0);
 				isGrab = false;
 				punchStatus = 1;
 
+				SetColSize ();
+
 			}
 		}
 	}
-	void SetAngle(){
-		float radius = (GetRad(-(player.transform.position - TouchInput.GetTouchWorldPosition(cam))) - 90);
+	void SetAngle(Vector3 a,Vector3 b){
+		//touch only
+		//float radius = (GetRad(-(player.transform.position - TouchInput.GetTouchWorldPosition(cam))) - 90);
+		//touch move
+		float radius = (GetRad(-(a - b)) - 90);
 		transform.parent.rotation = Quaternion.AngleAxis (radius,new Vector3(0,0,1));
 		//transform.parent.rotation = transform.parent.rotation.SetLookRotation (transform.position - TouchInput.GetTouchWorldPosition(cam),new Vector3(0,0,1));
+	}
+	void SetColSize(){
+		if (punchPos > 0.4f) {
+			col.offset = new Vector2 (0,-0.2f);
+			col.size = new Vector2 (0.1f,0.4f);
+		} else {
+			col.offset = new Vector2 (0,-punchPos / 2f);
+			col.size = new Vector2 (0.1f,punchPos);
+		}
 	}
 	void Punching(){
 		if(player.IsMistake() == true)isGrab = false;
@@ -66,11 +87,11 @@ public class Arm : CanPause {
 			if(isGrab == false){
 			//	SetAngle();
 			if(punchStatus == 1){
-				punchPos +=0.2f;
-				if(punchPos>=1)punchPos = 1;
+				punchPos +=0.1f;
+					if(punchPos>=1 * armSize)punchPos = 1 * armSize;
 			}
 			if(punchStatus == 0){
-				punchPos -=0.2f;
+				punchPos -=0.1f;
 				if(punchPos<=0){
 					punchPos = 0;
 					isPunching = false;
@@ -94,6 +115,9 @@ public class Arm : CanPause {
 				}
 			}
 			if(isGrab == true)transform.position = grabPos;
+
+			SetColSize();
+			//Debug.Log (col.size);
 		}
 		if (isPunching == false) {
 			if(col.enabled == true)col.enabled = false;
@@ -111,20 +135,25 @@ public class Arm : CanPause {
 		0f,0.5f,0.85f,0.9f,0.95f,1.0f,0.95f,0.9f,0.85f,0.8f,0.4f
 	};*/
 	float punchPos = 0;
-	void StopPunching(){
+	public void StopPunching(){
 		if (isPunching == true && isGrab == false) {
 			isGrab = true;
 			grabPos = transform.position;
 			EventManager.Invoke(ref EventManager.OnGrab);
 		}
 	}
-
+	void UpArmSize(){
+		if (armSize < 1.4f)
+			armSize += 0.2f;
+		transform.localScale = new Vector3 (armSize, armSize, 1);
+	}
+	/*
 	void OnTriggerEnter2D(Collider2D c){
 
 		if (c.transform.tag == "Grab") {
 			StopPunching();
 		}
-	}
+	}*/
 	public bool IsGrab(){
 		return isGrab;
 	}

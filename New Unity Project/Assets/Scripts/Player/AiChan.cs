@@ -3,6 +3,7 @@ using System.Collections;
 [RequireComponent (typeof (Rigidbody2D))]
 public class AiChan : CanPause {
 	Rigidbody2D rg;
+	Collider2D cd;
 	[SerializeField]Arm arm;
 	//private AutoJump aj;
 	public Vector2 maxVelocity = new Vector2(10f,4f);
@@ -16,11 +17,14 @@ public class AiChan : CanPause {
 	bool isDamage=false;
 	bool isMistake =false;
 	bool isCleard = false;
+	bool isBossMode = false;
 	int  damageTime = 0;
 	int  grabTime = 0;
 	// Use this for initialization
 	void Start () {
 		rg = GetComponent<Rigidbody2D> ();
+		cd = GetComponent<Collider2D>();
+		isBossMode = false;
 	//	aj = transform.GetChild (0).GetComponent<AutoJump> ();
 	}
 	void ModifyVelocity(){
@@ -45,6 +49,7 @@ public class AiChan : CanPause {
 	}
 	void Stop(){
 		rg.velocity = Vector2.zero;
+
 	}
 	void Jump(){
 
@@ -76,6 +81,7 @@ public class AiChan : CanPause {
 	override protected void NoPauseFixed() {
 		if (isMistake == false) {
 			if (isDamage == true) {
+				if (arm.IsGrab () == false) {
 				if (damageTime == 0) {
 					rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
 				}
@@ -83,6 +89,7 @@ public class AiChan : CanPause {
 					rg.velocity = new Vector2 (rg.velocity.x, 1.4f);
 				}
 				MoveLeft ();
+				}
 				damageTime ++;
 				if (damageTime > 40) {
 					isDamage = false;
@@ -91,7 +98,7 @@ public class AiChan : CanPause {
 				}
 			}
 			if (arm.IsGrab () == false) {
-
+				if(cd.enabled == false)cd.enabled = true;
 				if (isDamage == false)
 					MoveRight ();
 				if (isLand == false) {
@@ -108,11 +115,12 @@ public class AiChan : CanPause {
 			} else {
 				if (isDamage == false)
 					jumpLeft = 1;
+				if(cd.enabled == true)cd.enabled = false;
 				Stop ();
 				MoveToArm ();
 			}
 		}
-		if(hp <= 0 ||transform.position.y<-2|| isMistake == true ){
+		if(hp <= 0 ||transform.position.y<-1.5|| isMistake == true ){
 			Miss ();
 			Grav ();
 		}
@@ -137,8 +145,10 @@ public class AiChan : CanPause {
 			//}
 			if(c.contacts.Length>0){
 				if(c.contacts[0].normal == new Vector2(0,1)){
+					if(rg.velocity.y<=0){
 					isLand = true;
 					isJump = false;
+					}
 				}
 			}
 
@@ -163,5 +173,11 @@ public class AiChan : CanPause {
 	}
 	public bool IsMistake(){
 		return isMistake;
+	}
+	public bool IsBossMode(){
+		return isBossMode;
+	}
+	public void StartBossMode(){
+		isBossMode = true;
 	}
 }

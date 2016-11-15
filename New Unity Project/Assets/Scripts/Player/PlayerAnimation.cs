@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class PlayerAnimation : CanPause {
+public class PlayerAnimation : CanPauseAnimation {
 	[SerializeField] AiChan ai;
 	[SerializeField] List<Sprite> walkImage;
 	[SerializeField] List<Sprite> jumpImage;

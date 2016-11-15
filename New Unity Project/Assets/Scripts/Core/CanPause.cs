@@ -2,21 +2,31 @@
 using System.Collections;
 
 public class CanPause : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
 	
-	}
-	
+	Vector2 velocity;
+	bool isPause =false;
 	// Update is called once per frame
 	void Update () {
 		if (GlobalVariable.isPause == false) {
-			NoPause();
-		}
+
+			NoPause ();
+		} 
 	}
 	void FixedUpdate () {
 		if (GlobalVariable.isPause == false) {
+			if(isPause == true){
+				
+				GetComponent<Rigidbody2D>().velocity = velocity;
+				isPause = false;
+			}
 			NoPauseFixed();
+		}
+		else {
+			if(isPause == false){
+				velocity = GetComponent<Rigidbody2D>().velocity;
+				isPause = true;
+			}
+			GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 		}
 	}
 	virtual protected void NoPause(){
@@ -25,4 +35,5 @@ public class CanPause : MonoBehaviour {
 	virtual protected void NoPauseFixed(){
 		
 	}
+
 }

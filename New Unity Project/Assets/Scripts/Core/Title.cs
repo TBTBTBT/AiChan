@@ -10,6 +10,9 @@ public class Title : MonoBehaviour {
 	
 	// Update is called once per frame
 	void StartGame () {
-		Application.LoadLevel("Stage01");
+		if (!Application.isShowingSplashScreen) {
+			//スプラッシュ表示後
+			Application.LoadLevel ("Stage01");
+		}
 	}
 }

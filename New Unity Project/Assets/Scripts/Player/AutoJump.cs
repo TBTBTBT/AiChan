@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AutoJump : CanPause {
+public class AutoJump : MonoBehaviour {
 	private bool isHitLand;
 	private bool isHitLandPrev;
 	private bool doJump = false;
@@ -13,7 +13,7 @@ public class AutoJump : CanPause {
 	}
 	
 	// Update is called once per frame
-	override protected void NoPause(){
+	 void Update(){
 		isHitLandPrev = isHitLand;
 		isHitLand = false;
 		if (isHitLandPrev == false)
